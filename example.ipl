@@ -1,0 +1,48 @@
+//Create a new File
+//Example: createFLatFile("/tmp/test.csv", "TEXT1,TEXT2")
+function createFLatFile(FilePath, FlatFileHeader) {
+    fw = NewJavaObject("java.io.FileWriter", {
+        FilePath,
+        false //false means - New File
+    });
+
+    JavaCall("java.io.FileWriter", fw, "write", {
+        FlatFileHeader
+    });
+
+    JavaCall("java.io.FileWriter", fw, "close", {});
+}
+
+//Insert the content to the exists flat file using an array of string
+//Example: writeMultipleLines("/tmp/test.csv", arrayContentToWrite);
+function writeMultipleLines(FilePath, ComponentItemList) {
+    fw = NewJavaObject("java.io.FileWriter", {
+        FilePath,
+        true //Will not create a new file - the content will be concatenated to a new line
+    });
+
+    index = 0;
+    while (index < Length(ComponentItemList)) {
+        stringToWrite = stringList[index];
+        JavaCall("java.io.FileWriter", fw, "write", {
+            "\n" //Enter new line
+        });
+        JavaCall("java.io.FileWriter", fw, "write", {
+            stringToWrite //Write the content
+        });
+        index = index + 1;
+    }
+
+    JavaCall("java.io.FileWriter", fw, "close", {});
+}
+
+CSV_FILE_PATH = "/tmp/test.csv";
+CSV_COLUMNS = "column1,column2,column3";
+
+//Create a new file
+createFLatFile(CSV_FILE_PATH, CSV_COLUMNS);
+
+
+stringList = {"value1,value2,value3", "value4,value5,value6"};
+//Update the file created with multiple lines
+writeMultipleLines(CSV_FILE_PATH, stringList);
